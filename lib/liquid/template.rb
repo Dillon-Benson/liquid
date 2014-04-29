@@ -157,7 +157,14 @@ module Liquid
     end
 
     def render!(*args)
-      @rethrow_errors = true; render(*args)
+      @rethrow_errors = true
+
+      context = args[0]
+      if context && context.kind_of?(Liquid::Context) && context.rethrow_errors != @rethrow_errors
+        raise ArgumentError, 'Unable to set rethrow error policy on a context provided as parameter'
+      end
+
+      render(*args)
     end
 
     private
